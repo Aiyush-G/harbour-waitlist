@@ -73,7 +73,7 @@ export default function Home() {
 
           <h1 className="mx-auto mt-10 max-w-4xl font-serif text-[3rem] leading-[0.98] tracking-normal text-[#242424] sm:text-[3.5rem] md:text-[3.75rem]">
             Better Support for Taxi Drivers Starts Here.
-            <br className="hidden md:block" /> 
+            <br className="hidden md:block" />
           </h1>
 
           <p className="mx-auto mt-6 max-w-[430px] text-[15px] leading-7 text-[#666666] sm:text-base">

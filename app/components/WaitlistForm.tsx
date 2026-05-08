@@ -2,6 +2,12 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
+type WaitlistResponse = {
+  ok: boolean;
+  duplicate?: boolean;
+  message: string;
+};
+
 type TallyPopupOptions = {
   layout?: "default" | "modal";
   width?: number;
@@ -39,7 +45,6 @@ function loadTallyWidget() {
     const existingScript = document.querySelector<HTMLScriptElement>(
       `script[src="${TALLY_WIDGET_SRC}"]`,
     );
-
     const script = existingScript ?? document.createElement("script");
 
     script.addEventListener("load", () => resolve(), { once: true });
@@ -57,6 +62,24 @@ function loadTallyWidget() {
   });
 
   return tallyWidgetPromise;
+}
+
+async function openTallyPopup(email: string) {
+  await loadTallyWidget();
+
+  if (!window.Tally) {
+    throw new Error("Tally is unavailable.");
+  }
+
+  window.Tally.openPopup(TALLY_FORM_ID, {
+    layout: "modal",
+    width: 520,
+    hideTitle: true,
+    overlay: true,
+    hiddenFields: {
+      email,
+    },
+  });
 }
 
 export function WaitlistForm() {
@@ -143,27 +166,40 @@ export function WaitlistForm() {
     setMessage("");
 
     try {
-      await loadTallyWidget();
-
-      if (!window.Tally) {
-        throw new Error("Tally is unavailable.");
-      }
-
-      window.Tally.openPopup(TALLY_FORM_ID, {
-        layout: "modal",
-        width: 520,
-        hideTitle: true,
-        overlay: true,
-        hiddenFields: {
-          email: cleanedEmail,
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email: cleanedEmail }),
       });
 
+      const data = (await response.json()) as WaitlistResponse;
+
+      if (!response.ok || !data.ok) {
+        setStatus("error");
+        setMessage(data.message || "Something went wrong. Please try again.");
+        return;
+      }
+
       setStatus("success");
-      setMessage("Complete the short form in the popup to join.");
+      setMessage(data.message);
+
+      if (!data.duplicate) {
+        setTargetCount((current) => current + 1);
+      }
+
+      try {
+        await openTallyPopup(cleanedEmail);
+      } catch {
+        setStatus("error");
+        setMessage(
+          "Your email was saved, but we couldn’t open the form. Please use the navbar link to continue.",
+        );
+      }
     } catch {
       setStatus("error");
-      setMessage("We couldn’t open the form. Please try again.");
+      setMessage("Something went wrong. Please try again.");
     }
   }
 
