@@ -6,7 +6,7 @@
   --muted: #707070;
   --border: #e8e8e5;
   --card: #f2f2f0;
-  --blue: #1477f8;
+  --accent: #174d3c;
 }
 
 @theme inline {
@@ -37,5 +37,5 @@ input {
 }
 
 ::selection {
-  background: rgba(20, 119, 248, 0.16);
+  background: rgba(23, 77, 60, 0.16);
 }

@@ -51,7 +51,7 @@ export function FAQAccordion() {
           >
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-5 text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-[#1477F8]/15"
+              className="flex w-full items-center justify-between gap-5 text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-[#174D3C]/15"
               onClick={() => setOpenIndex(isOpen ? -1 : index)}
               aria-expanded={isOpen}
               aria-controls={contentId}
@@ -60,7 +60,7 @@ export function FAQAccordion() {
                 {faq.question}
               </span>
               <span
-                className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[#1477F8] text-white shadow-[0_12px_26px_rgba(20,119,248,0.18)]"
+                className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-[#174D3C] text-white shadow-[0_12px_26px_rgba(23,77,60,0.18)]"
                 aria-hidden="true"
               >
                 <span className="absolute h-[2px] w-4 rounded-full bg-current" />
